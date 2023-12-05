@@ -1,23 +1,28 @@
 package web.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.service.CarService;
 
 @Controller
+@RequestMapping("/cars")
 public class CarsController {
+    private final CarService carService;
 
-    @GetMapping(value = "/cars")
-    public String printWelcome(ModelMap model) {
-        List<String> messages = new ArrayList<>();
-        messages.add("Hello!");
-        messages.add("It's a page with cars");
-        messages.add("Nety poka nihera ");
-        model.addAttribute("messages", messages);
-        return "index";
+    @Autowired
+    public CarsController(CarService carService) {
+        this.carService = carService;
+    }
+
+    @GetMapping()
+    public String getList(@RequestParam(value = "count", defaultValue = "5") int count, ModelMap model) {
+        model.addAttribute("cars", carService.getCountList(count));
+        return "cars";
     }
 
 }
